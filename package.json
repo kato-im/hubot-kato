@@ -1,0 +1,31 @@
+{
+  "name": "hubot-lechat",
+  "version": "0.0.1",
+  "author": "Yaroslav Lapin",
+  "keywords": [
+    "github hubot lechat adapter"
+  ],
+  "description": "A LeChat adapter for hubot",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/JLarky/hubot-lechat/raw/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JLarky/hubot-lechat.git"
+  },
+  "dependencies": {
+    "hubot": ">=2.0.5",
+    "websocket": ">=1.0.8"
+  },
+  "devDependencies": {
+    "coffee-script": "1.1.3"
+  },
+  "main": "./src/lechat",
+  "engine": "node > 0.6.0 < 0.7.0",
+  "engines": {
+    "node": "*"
+  }
+}
