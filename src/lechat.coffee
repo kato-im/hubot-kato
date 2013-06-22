@@ -7,6 +7,10 @@ WebSocketClient = require('websocket').client
 
 
 class LeChat extends Adapter
+  constructor: (robot) ->
+    super robot
+    @logger = robot.logger
+
   send: (envelope, strings...) ->
     @client.send(envelope.room, str) for str in strings
 
@@ -22,6 +26,7 @@ class LeChat extends Adapter
       login   : process.env.HUBOT_LECHAT_LOGIN
       password: process.env.HUBOT_LECHAT_PASSWORD
       rooms   : process.env.HUBOT_LECHAT_ROOMS.split(",")
+    @logger.debug "LeChat adapter options: #{JSON.stringify options}"
     client = new LeChatClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
@@ -69,7 +74,7 @@ class LeChatClient extends EventEmitter
           self.sessionId = id
           json = JSON.parse body
           self.account_id = json.account_id
-          self.session_id = json.session_-id
+          self.session_id = json.id
           self.emit 'login'
         when 403
           throw new Error "Invalid login/password combination"
@@ -89,7 +94,7 @@ class LeChatClient extends EventEmitter
       self.connection = connection
       connection.on 'close', () ->
         console.log('echo-protocol Connection Closed')
-        self.emit 'disconnect'
+        self.emit 'reconnect'
       connection.on 'error', (error) ->
         console.log('error', error)
       connection.on 'message', (message) ->

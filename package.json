@@ -1,6 +1,6 @@
 {
   "name": "hubot-lechat",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Yaroslav Lapin",
   "keywords": [
     "github hubot lechat adapter"
