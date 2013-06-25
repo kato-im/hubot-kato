@@ -5,7 +5,7 @@ WebSocketClient = require('websocket').client
 
 {Robot, Adapter, TextMessage, EnterMessage, LeaveMessage, Response} = require 'hubot'
 
-{TextMessage} = require 'hubot/src/message' # because of bugs with new version of nodejs
+{TextMessage} = require '../../../src/message' # because of bugs with new version of nodejs
 
 class LeChat extends Adapter
   constructor: (robot) ->
