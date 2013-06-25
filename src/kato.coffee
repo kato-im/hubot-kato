@@ -26,8 +26,15 @@ class Kato extends Adapter
       api_url : process.env.HUBOT_KATO_API || "https://api.kato.im"
       login   : process.env.HUBOT_KATO_LOGIN
       password: process.env.HUBOT_KATO_PASSWORD
-      rooms   : process.env.HUBOT_KATO_ROOMS.split(",")
+      rooms   : process.env.HUBOT_KATO_ROOMS
+    options.rooms = options.rooms.split(",") if options.rooms
     @logger.debug "Kato adapter options: #{JSON.stringify options}"
+
+    unless options.login? and options.password? and options.rooms?
+      @robot.logger.error \
+        "Not enough parameters provided. I need a login, password and rooms"
+      process.exit(1)
+
     client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
@@ -78,7 +85,8 @@ class KatoClient extends EventEmitter
           self.session_id = json.id
           self.emit 'login'
         when 403
-          throw new Error "Invalid login/password combination"
+          logger.error "Invalid login/password combination"
+          process.exit(2)
         else
           logger.error "Can't login. Status: #{response.statusCode}, Id: #{id}, Headers: #{JSON.stringify(response.headers)}"
           logger.error "Kato error: #{response.statusCode}"
