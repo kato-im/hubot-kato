@@ -1,25 +1,25 @@
-# Hubot LeChat Adapter
+# Hubot Kato Adapter
 
 ## Description
 
-LeChat adapter allows you to send messages to Hubot from room and get messages
+Kato adapter allows you to send messages to Hubot from room and get messages
 back.
 
 ## Installation
 
-* Add `hubot-lechat` as a dependency in your hubot's `package.json`
+* Add `hubot-kato` as a dependency in your hubot's `package.json`
 * Install dependencies with `npm install`
-* Run hubot with `bin/hubot -a lechat`
+* Run hubot with `bin/hubot -a kato`
 
 ## Usage
 
 You will need to set some environment variables to use this adapter.
 
-    % export HUBOT_LECHAT_ROOMS="d2506b04fb529cb77cbe03daad7e8"
+    % export HUBOT_KATO_ROOMS="d2506b04fb529cb77cbe03daad7e8"
 
-    % export HUBOT_LECHAT_LOGIN="lechat-bot@mycompany.com"
+    % export HUBOT_KATO_LOGIN="kato-bot@mycompany.com"
 
-    % export HUBOT_LECHAT_PASSWORD="mycompanybot"
+    % export HUBOT_KATO_PASSWORD="mycompanybot"
 
 ## Copyright
 

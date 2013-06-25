@@ -7,7 +7,7 @@ WebSocketClient = require('websocket').client
 
 {TextMessage} = require '../../../src/message' # because of bugs with new version of nodejs
 
-class LeChat extends Adapter
+class Kato extends Adapter
   constructor: (robot) ->
     super robot
     @logger = robot.logger
@@ -23,12 +23,12 @@ class LeChat extends Adapter
     self = @
 
     options =
-      api_url : process.env.HUBOT_LECHAT_API || "https://api.lechat.im"
-      login   : process.env.HUBOT_LECHAT_LOGIN
-      password: process.env.HUBOT_LECHAT_PASSWORD
-      rooms   : process.env.HUBOT_LECHAT_ROOMS.split(",")
-    @logger.debug "LeChat adapter options: #{JSON.stringify options}"
-    client = new LeChatClient(options, @robot)
+      api_url : process.env.HUBOT_KATO_API || "https://api.kato.im"
+      login   : process.env.HUBOT_KATO_LOGIN
+      password: process.env.HUBOT_KATO_PASSWORD
+      rooms   : process.env.HUBOT_KATO_ROOMS.split(",")
+    @logger.debug "Kato adapter options: #{JSON.stringify options}"
+    client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
       unless user.id is client.account_id
@@ -44,9 +44,9 @@ class LeChat extends Adapter
     self.emit "connected"
 
 exports.use = (robot) ->
-  new LeChat robot
+  new Kato robot
 
-class LeChatClient extends EventEmitter
+class KatoClient extends EventEmitter
   self = @
   constructor: (options, @robot) ->
     self = @
@@ -81,7 +81,7 @@ class LeChatClient extends EventEmitter
           throw new Error "Invalid login/password combination"
         else
           logger.error "Can't login. Status: #{response.statusCode}, Id: #{id}, Headers: #{JSON.stringify(response.headers)}"
-          logger.error "LeChat error: #{response.statusCode}"
+          logger.error "Kato error: #{response.statusCode}"
           self.emit 'reconnect'
 
   WebSocket: () ->
@@ -177,7 +177,7 @@ class LeChatClient extends EventEmitter
         callback null, {response: response, body: data}
 
       response.on "error", (err) ->
-        logger.error "LeChat response error: #{err}"
+        logger.error "Kato response error: #{err}"
         callback err, { }
 
     if method is "POST" || method is "PUT"
@@ -186,4 +186,4 @@ class LeChatClient extends EventEmitter
       request.end()
 
     request.on "error", (err) ->
-      logger.error "LeChat request error: #{err}"
+      logger.error "Kato request error: #{err}"
