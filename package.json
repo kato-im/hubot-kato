@@ -1,6 +1,6 @@
 {
   "name": "hubot-kato",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Yaroslav Lapin",
   "keywords": [
     "github hubot kato adapter"
@@ -9,12 +9,12 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/JLarky/hubot-kato/raw/master/LICENSE"
+      "url": "http://github.com/kato-im/hubot-kato/raw/master/LICENSE"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/JLarky/hubot-kato.git"
+    "url": "git://github.com/kato-im/hubot-kato.git"
   },
   "dependencies": {
     "hubot": ">=2.0.5",
