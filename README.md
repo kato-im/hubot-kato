@@ -23,4 +23,4 @@ You will need to set some environment variables to use this adapter.
 
 ## Copyright
 
-Copyright &copy; LeChat Inc. See LICENSE for details.
+Copyright &copy; LeChat, Inc. See LICENSE for details.
