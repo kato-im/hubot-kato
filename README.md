@@ -2,18 +2,17 @@
 
 ## Description
 
-Kato adapter allows you to send messages to Hubot from room and get messages
-back.
+The Kato Hubot adapter allows you to send messages to Hubot from a Kato room and receive messages back.
 
 ## Installation
 
-* Add `hubot-kato` as a dependency in your hubot's `package.json`
+* Add `hubot-kato` as a dependency in your Hubot's `package.json`
 * Install dependencies with `npm install`
-* Run hubot with `bin/hubot -a kato`
+* Start Hubot with `bin/hubot -a kato`
 
 ## Usage
 
-You will need to set some environment variables to use this adapter.
+You will need to set some environment variables to use this adapter:
 
     % export HUBOT_KATO_ROOMS="d2506b04fb529cb77cbe03daad7e8"
 
