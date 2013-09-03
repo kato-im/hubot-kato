@@ -5,7 +5,8 @@ WebSocketClient = require('websocket').client
 
 {Robot, Adapter, TextMessage, EnterMessage, LeaveMessage, Response} = require 'hubot'
 
-{TextMessage} = require '../../../src/message' # because of bugs with new version of nodejs
+try
+  {TextMessage} = require '../../../src/message' # because of bugs with new version of nodejs
 
 class Kato extends Adapter
   constructor: (robot) ->
