@@ -143,6 +143,8 @@ class KatoClient extends EventEmitter
       type: "text"
       params:
         text: str
+        data:
+          renderer: "markdown"
 
   put: (path, body, callback) ->
     @request "PUT", path, body, callback
