@@ -78,7 +78,7 @@ class KatoClient extends EventEmitter
     @put "/sessions/"+id, data, (err, data) ->
       {response, body} = data
       switch response.statusCode
-        when 200
+        when 200,201
           self.sessionKey = response.headers['set-cookie'][0].split(';')[0]
           self.sessionId = id
           json = JSON.parse body
