@@ -2,6 +2,7 @@ HTTP            = require('http')
 HTTPS           = require('https')
 EventEmitter    = require('events').EventEmitter
 WebSocketClient = require('websocket').client
+Util = require "util"
 
 {Robot, Adapter, TextMessage, EnterMessage, LeaveMessage, Response} = require 'hubot'
 
@@ -39,10 +40,12 @@ class Kato extends Adapter
     client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
+      @logger.info "message: #{JSON.stringify message}"
       unless user.id is client.account_id
         self.receive new TextMessage user, message
 
     client.on 'reconnect', () ->
+      @logger.info "recconect"
       setTimeout ->
         client.Login()
       , 5000
@@ -66,7 +69,9 @@ class KatoClient extends EventEmitter
     self.rooms = options.rooms
 
     @.on 'login', (err) ->
+      msg.send "#{Util.inspect(err)}"
       @WebSocket()
+      cosole.log "login"
 
   Login: () ->
     logger = @robot.logger
@@ -138,6 +143,7 @@ class KatoClient extends EventEmitter
     part(size || 8)
 
   send: (room_id, str) ->
+    console.log "send: #{JSON.stringify str}"
     @connection.sendUTF JSON.stringify
       room_id: room_id
       type: "text"
@@ -150,6 +156,7 @@ class KatoClient extends EventEmitter
     @request "PUT", path, body, callback
 
   request: (method, path, body, callback) ->
+    console.log "request: #{JSON.stringify body}"
     logger = @robot.logger
 
     if self.secure
