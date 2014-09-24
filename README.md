@@ -1,4 +1,4 @@
-# Hubot Kato Adapter
+# Kato Hubot Adapter
 
 ## Description
 
