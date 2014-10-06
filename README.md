@@ -6,7 +6,7 @@ The Kato Hubot adapter allows you to send messages to Hubot from a Kato room and
 
 ## Installation
 
-Install Hubot (consult the [hubot documentation](https://github.com/github/hubot/tree/master/docs) for more information):
+Install Hubot (consult the [Hubot documentation](https://github.com/github/hubot/tree/master/docs) for more information):
 
     $ sudo npm install -g hubot coffee-script
 
