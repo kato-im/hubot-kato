@@ -24,14 +24,12 @@ class Kato extends Adapter
     self = @
 
     options =
-      api_url : process.env.HUBOT_KATO_API # || "https://api.kato.im"
+      api_url : process.env.HUBOT_KATO_API || "https://api.kato.im"
       login   : process.env.HUBOT_KATO_LOGIN
       password: process.env.HUBOT_KATO_PASSWORD
-#      rooms   : process.env.HUBOT_KATO_ROOMS
-#    options.rooms = options.rooms.split(",") if options.rooms
     @logger.debug "Kato adapter options: #{JSON.stringify options}"
 
-    unless options.login? and options.password? #and options.rooms?
+    unless options.login? and options.password?
       @robot.logger.error \
         "Not enough parameters provided. I need a login, password"
       process.exit(1)
@@ -161,12 +159,6 @@ class KatoClient extends EventEmitter
             console.log("Send:" + json)
           else
             console.log("Received: '", data, "'")
-
-#      for room_id in self.rooms
-#        logger.info "Joining #{room_id}"
-#        connection.sendUTF JSON.stringify
-#          room_id: room_id
-#          type: "hello"
 
       Subscribe = () ->
         # subscribe to organizations
