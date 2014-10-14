@@ -2,6 +2,16 @@
   "name": "hubot-kato",
   "version": "0.0.9",
   "author": "Yaroslav Lapin",
+  "contributors": [
+      { "name": "Yaroslav Lapin" },
+      { "name": "Evgeniy Tokarev" },
+      { "name": "Andrei Soroker" },
+      {
+        "name": "Max (aka 'mxlje')",
+        "email": "hello@maxlielje.co",
+        "url": "http://maxlielje.co"
+      },
+  ],
   "keywords": [
     "github hubot kato adapter"
   ],

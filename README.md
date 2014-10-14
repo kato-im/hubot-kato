@@ -19,7 +19,7 @@ Add `hubot-kato` as a dependency in `package.json`, so that the dependencies sec
 
 ```json
 "dependencies": {
-  "hubot-kato":    ">= 0.0.7",
+  "hubot-kato":    ">= 0.0.9",
   "hubot":         ">= 2.6.0 < 3.0.0",
   "hubot-scripts": ">= 2.5.0 < 3.0.0"
 }
@@ -38,11 +38,8 @@ Then invite it to your organization, creating a new account. Confirm the email a
 
 Next, you will need to set some environment variables:
 
-    $ export HUBOT_KATO_ROOMS="d2506b04fb529cb77cbe03daad7e8"
     $ export HUBOT_KATO_LOGIN="kato-bot@mycompany.com"
     $ export HUBOT_KATO_PASSWORD="mycompanybot"
-
-`HUBOT_KATO_ROOMS` is a comma (`,`) seperated list of IDs for all the rooms your bot should access.
 
 ## Usage
 
@@ -51,9 +48,9 @@ Once that’s done, you can start Hubot with Kato as the adapter:
     $ ./bin/hubot -a kato
 
 ### Notes
-
-Currently the Kato adapter only supports listening for commands in a room, not in 1 on 1 chats.
+Kato addapter supports listening for commands in a rooms and 1 on 1 chats.
 You can address your bot by beginning a message with its name, which defaults to "Hubot".
+(Bot not listening messages from user which credentials is used for Hubot login)
 
 You can change this and also set an alias using the following additional environment vars:
 
