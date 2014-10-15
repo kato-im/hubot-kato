@@ -1,7 +1,33 @@
+# TODO:
+# * --debug loggining--
+# * bot account listening - is a possible?
+# * simplify code
+
 HTTP            = require('http')
 HTTPS           = require('https')
 EventEmitter    = require('events').EventEmitter
 WebSocketClient = require('websocket').client
+
+Util            = require("util")
+Winston         = require('winston')
+
+winston = new Winston.Logger
+  transports: [
+    new Winston.transports.File {
+      filename: process.env.HUBOT_KATO_LOG_FILE || 'kato-hubot.log',
+      timestamp: true,
+      json: false,
+      level:     'debug'
+    }
+    new Winston.transports.Console { level: 'debug' }
+  ]
+
+# simple Winston wrapper for debuging logging
+logger =
+  error   : (msg) -> winston.log("error", msg)
+  debug   : (msg) -> winston.log("debug", msg)
+  info    : (msg) -> winston.log("info",  msg)
+  inspect : (msg, obj) -> winston.log("debug", msg + "#{Util.inspect(obj)}")
 
 {Robot, Adapter, TextMessage, EnterMessage, LeaveMessage, Response} = require 'hubot'
 
@@ -11,7 +37,6 @@ try
 class Kato extends Adapter
   constructor: (robot) ->
     super robot
-    @logger = robot.logger
 
   send: (envelope, strings...) ->
     @client.send(envelope.room, str) for str in strings
@@ -27,18 +52,18 @@ class Kato extends Adapter
       api_url : process.env.HUBOT_KATO_API || "https://api.kato.im"
       login   : process.env.HUBOT_KATO_LOGIN
       password: process.env.HUBOT_KATO_PASSWORD
-    @logger.debug "Kato adapter options: #{JSON.stringify options}"
+    logger.debug "Kato adapter options: #{Util.inspect options}"
 
     unless options.login? and options.password?
-      @robot.logger.error \
+      logger.error \
         "Not enough parameters provided. I need a login, password"
       process.exit(1)
 
     client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
-      @robot.logger.info \
-        "TextMessage Received: #{message} \n User: #{JSON.stringify user}"
+      logger.info \
+        "TextMessage Received: #{message} \n User: #{Util.inspect user}"
       unless user.id is client.account_id
         self.receive new TextMessage user, message
 
@@ -61,14 +86,13 @@ class KatoClient extends EventEmitter
   self = @
   constructor: (options, @robot) ->
     self = @
-    logger = @robot.logger
     [schema, host] = options.api_url.split("://")
-    self.secure = schema == "https"
-    self.api_host = host
-    self.login = options.login
-    self.password = options.password
-    self.rooms = options.rooms
-    self.orgs = []
+    self.secure    = schema == "https"
+    self.api_host  = host
+    self.login     = options.login
+    self.password  = options.password
+    self.rooms     = options.rooms
+    self.orgs      = []
 
     @.on 'login', (err) ->
       @WebSocket()
@@ -81,20 +105,18 @@ class KatoClient extends EventEmitter
           json = JSON.parse body
           self.orgs = []
           for m in json.memberships
-            console.log "membership id:"+ m.org_id
             self.orgs.push({org_id:     m.org_id,\
                             org_name:   m.org_name,\
                             restricted: m.restricted,\
                             role:       m.role})
-          console.log "account: "+json
+          logger.inspect "account memberships: #{Util.inspect json}"
           self.emit 'login'
         when 403
-          @logger.error "Invalid account id"
+          logger.error "Invalid account id"
         else
           self.emit 'reconnect'
 
   Login: () ->
-    logger = @robot.logger
     id = @uuid()
     data = JSON.stringify
       email: self.login
@@ -114,26 +136,25 @@ class KatoClient extends EventEmitter
           logger.error "Invalid login/password combination"
           process.exit(2)
         else
-          logger.error "Can't login. Status: #{response.statusCode}, Id: #{id}, Headers: #{JSON.stringify(response.headers)}"
+          logger.error "Can't login. Status: #{response.statusCode}, Id: #{id}, Headers: #{Util.inspect(response.headers)}"
           logger.error "Kato error: #{response.statusCode}"
           self.emit 'reconnect'
 
   WebSocket: () ->
-    logger = @robot.logger
     client = new WebSocketClient()
 
     client.on 'connectFailed', (error) ->
-      console.log('Connect Error: ' + error.toString())
+      logger.error('_Connect Error: ' + error.toString())
 
     client.on 'connect', (connection) ->
       self.connection = connection
       connection.on 'close', () ->
-        console.log('echo-protocol Connection Closed')
+        logger.info 'echo-protocol Connection Closed'
         self.emit 'reconnect'
       connection.on 'error', (error) ->
-        console.log('error', error)
+        logger.info "error #{error}"
       connection.on 'message', (message) ->
-        logger.info "incomming: #{JSON.stringify message}"
+        logger.debug "incomming message: #{Util.inspect message}"
         if (message.type == 'utf8')
           data = JSON.parse message.utf8Data
           if data.type == "text"
@@ -156,9 +177,9 @@ class KatoClient extends EventEmitter
                 device_type: "web"
               })
             connection.sendUTF json
-            console.log("Send:" + json)
+            logger.info "send presence: #{json}"
           else
-            console.log("Received: '", data, "'")
+            logger.info "unused message received: #{Util.inspect(data)}"
 
       Subscribe = () ->
         # subscribe to organizations
@@ -169,21 +190,20 @@ class KatoClient extends EventEmitter
           params.forums = {}
           if (o.role == "owner")
             params.groups = {}
-          j = JSON.stringify(
+          json = JSON.stringify(
             type: "sync"
             org_id: o.org_id
             group_id: o.org_id
             params: params
           )
-          console.log("subscribe json:\n" + j)
-          connection.sendUTF j
+          logger.info "subscribe json send:\n#{json}"
+          connection.sendUTF json
 
       # hello message
       json = JSON.stringify(
         type: "sync"
         params: { account: {} })
-      console.log("hello json:" + json)
-      console.log("Send: " + json)
+      logger.info "send ws hello: #{json}"
       connection.sendUTF json, Subscribe()
 
     headers =
@@ -196,7 +216,6 @@ class KatoClient extends EventEmitter
     part(size || 8)
 
   send: (room_id, str) ->
-    console.log "send: #{JSON.stringify str}"
     json = JSON.stringify
       room_id: room_id
       type: "text"
@@ -204,7 +223,7 @@ class KatoClient extends EventEmitter
         text: str
         data:
           renderer: "markdown"
-    console.log "Sended: " + json
+    logger.debug "sended: #{JSON.stringify json}"
     @connection.sendUTF json
 
   put: (path, body, callback) ->
@@ -214,8 +233,6 @@ class KatoClient extends EventEmitter
     @request "GET", path, body, callback
 
   request: (method, path, body, callback) ->
-    logger = @robot.logger
-
     if self.secure
       module = HTTPS
       port = 443
