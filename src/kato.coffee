@@ -68,8 +68,9 @@ class Kato extends Adapter
     client.on "TextMessage", (user, message) ->
       logger.info \
         "TextMessage Received: #{message} \n User: #{Util.inspect user}"
-      unless user.id is client.account_id
-        self.receive new TextMessage user, message
+      # In old code here was this check: unless user.id is client.account_id
+      # to be sure tha message is send not by hubot user
+      self.receive new TextMessage user, message
 
     client.on 'reconnect', () ->
       setTimeout ->
