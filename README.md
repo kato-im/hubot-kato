@@ -68,7 +68,7 @@ or
 
     $ export HUBOT_KATO_LOG_FILE="path/filename.log"
      
-Optional log level (common values 'error', 'debug', 'info', 'silly'):
+Optional log level (common values 'error', 'debug', 'info'):
 
     $ export HUBOT_KATO_LOG_LEVEL="debug" 
 
