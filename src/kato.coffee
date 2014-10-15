@@ -11,6 +11,7 @@ WebSocketClient = require('websocket').client
 Util            = require("util")
 Winston         = require('winston')
 
+# logger options
 winston = new Winston.Logger
   transports: [
     new Winston.transports.File {
@@ -24,7 +25,7 @@ winston = new Winston.Logger
     }
   ]
 
-# simple Winston wrapper for debuging logging
+# simple Winston logger wrapper
 logger =
   error   : (msg) -> winston.log("error", msg)
   debug   : (msg) -> winston.log("debug", msg)
@@ -36,6 +37,7 @@ logger =
 try
   {TextMessage} = require '../../../src/message' # because of bugs with new version of nodejs
 
+# Hubot Adapter
 class Kato extends Adapter
   constructor: (robot) ->
     super robot
@@ -99,6 +101,9 @@ class KatoClient extends EventEmitter
     @.on 'login', (err) ->
       @WebSocket()
 
+  # Get organizations membership which is available for account.
+  # Set returned orgs collection to self.orgs
+  # (will be used for ws messages subscription)
   GetAccount: () ->
     @get "/accounts/"+self.account_id, null, (err, data) ->
       {response, body} = data
@@ -133,7 +138,7 @@ class KatoClient extends EventEmitter
           json = JSON.parse body
           self.account_id = json.account_id
           self.session_id = json.id
-          self.GetAccount()
+          self.GetAccount() # getting additional account infformation for ws subscription
         when 403
           logger.error "Invalid login/password combination"
           process.exit(2)
@@ -159,7 +164,7 @@ class KatoClient extends EventEmitter
         logger.debug "incomming message: #{Util.inspect message}"
         if (message.type == 'utf8')
           data = JSON.parse message.utf8Data
-          if data.type == "text"
+          if data.type == "text" # message for hubot
             user =
               id: data.from.id
               name: data.from.name
@@ -168,7 +173,7 @@ class KatoClient extends EventEmitter
             self.emit "TextMessage", user, data.params.text
           else if data.type == "read" || data.type == "typing" || data.type == "silence"
             # ignore
-          else if data.type == "check"
+          else if data.type == "check" # server check of status
             json = JSON.stringify(
               org_id: data.org_id,
               type: "presence",
@@ -176,15 +181,15 @@ class KatoClient extends EventEmitter
                 status: "online",
                 ts: Date.now(),
                 tz_offset: new Date().getTimezoneOffset()/60,
-                device_type: "web"
+                device_type: "hubot"  # TODO: not sure about it
               })
-            connection.sendUTF json
+            connection.sendUTF json # notifying server for hubot user presence
             logger.info "send presence: #{json}"
           else
             logger.info "unused message received: #{Util.inspect(data)}"
 
+      # Send message for subscribing to all avalable rooms
       Subscribe = () ->
-        # subscribe to organizations
         for o in self.orgs
           params = {}
           params.organization = {}
@@ -201,7 +206,7 @@ class KatoClient extends EventEmitter
           logger.info "subscribe json send:\n#{json}"
           connection.sendUTF json
 
-      # hello message
+      # Subscribe to organizations messages (aka hello)
       json = JSON.stringify(
         type: "sync"
         params: { account: {} })
@@ -245,7 +250,7 @@ class KatoClient extends EventEmitter
       "Authorization" : @authorization
       "Host"          : self.api_host
       "Content-Type"  : "application/json"
-      "Cookie"        : self.sessionKey
+      "Cookie"        : self.sessionKey # it's need for HTTP api requests
 
     options =
       "agent"  : false
