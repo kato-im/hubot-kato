@@ -1,8 +1,3 @@
-# TODO:
-# * --debug loggining--
-# * bot account listening - is a possible?
-# * simplify code
-
 HTTP            = require('http')
 HTTPS           = require('https')
 EventEmitter    = require('events').EventEmitter
