@@ -59,6 +59,20 @@ You can change this and also set an alias using the following additional environ
 
 Your bot should now answer `!ping` with `PONG`.
 
+#### Logging option
+Optional log filename (by default filename is kato-hubot.log):
+
+    $ export HUBOT_KATO_LOG_FILE="filename.log" 
+    
+or 
+
+    $ export HUBOT_KATO_LOG_FILE="path/filename.log"
+     
+Optional log level (common values 'error', 'debug', 'info', 'silly'):
+
+    $ export HUBOT_KATO_LOG_LEVEL="debug" 
+
+
 ## Copyright
 
 Copyright &copy; LeChat, Inc. See LICENSE for details.

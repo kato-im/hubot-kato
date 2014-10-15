@@ -17,9 +17,11 @@ winston = new Winston.Logger
       filename: process.env.HUBOT_KATO_LOG_FILE || 'kato-hubot.log',
       timestamp: true,
       json: false,
-      level:     'debug'
+      level: process.env.HUBOT_KATO_LOG_LEVEL || 'info'
     }
-    new Winston.transports.Console { level: 'debug' }
+    new Winston.transports.Console {
+      level: process.env.HUBOT_KATO_LOG_LEVEL || 'info'
+    }
   ]
 
 # simple Winston wrapper for debuging logging
