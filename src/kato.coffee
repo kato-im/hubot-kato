@@ -157,8 +157,7 @@ class KatoClient extends EventEmitter
       connection.on 'error', (error) ->
         logger.info "error #{error}"
       connection.on 'message', (message) ->
-        console.log 'hello'
-        logger.debug "incoming message: #{Util.inspect message}"
+        logger.debug "incomming message: #{Util.inspect message}"
         if (message.type == 'utf8')
           data = JSON.parse message.utf8Data
           if data.type == "text" # message for hubot
@@ -166,8 +165,9 @@ class KatoClient extends EventEmitter
               id: data.from.id
               name: data.from.name
               room: data.room_id
-            user = self.robot.brain.userForId(user.id, user)
-            self.emit "TextMessage", user, data.params.text
+            if self.login != data.from.email # ignore own messages
+              user = self.robot.brain.userForId(user.id, user)
+              self.emit "TextMessage", user, data.params.text
           else if data.type == "read" || data.type == "typing" || data.type == "silence"
             # ignore
           else if data.type == "check" # server check of status
