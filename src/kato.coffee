@@ -61,8 +61,8 @@ class Kato extends Adapter
     client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
-      logger.info \
-        "TextMessage Received: #{message} \n User: #{Util.inspect user}"
+      # logger.info \
+      #  "TextMessage Received: #{message} \n User: #{Util.inspect user}"
       # In old code here was this check: unless user.id is client.account_id
       # to be sure tha message is send not by hubot user
       self.receive new TextMessage user, message
@@ -157,7 +157,8 @@ class KatoClient extends EventEmitter
       connection.on 'error', (error) ->
         logger.info "error #{error}"
       connection.on 'message', (message) ->
-        logger.debug "incomming message: #{Util.inspect message}"
+        console.log 'hello'
+        logger.debug "incoming message: #{Util.inspect message}"
         if (message.type == 'utf8')
           data = JSON.parse message.utf8Data
           if data.type == "text" # message for hubot
@@ -180,9 +181,9 @@ class KatoClient extends EventEmitter
                 device_type: "hubot"  # TODO: not sure about it
               })
             connection.sendUTF json # notifying server for hubot user presence
-            logger.info "send presence: #{json}"
+            # logger.info "send presence: #{json}"
           else
-            logger.info "unused message received: #{Util.inspect(data)}"
+            # logger.info "unused message received: #{Util.inspect(data)}"
 
       # Send message for subscribing to all avalable rooms
       Subscribe = () ->
@@ -199,14 +200,14 @@ class KatoClient extends EventEmitter
             group_id: o.org_id
             params: params
           )
-          logger.info "subscribe json send:\n#{json}"
+          # logger.info "subscribe json send:\n#{json}"
           connection.sendUTF json
 
       # Subscribe to organizations messages (aka hello)
       json = JSON.stringify(
         type: "sync"
         params: { account: {} })
-      logger.info "send ws hello: #{json}"
+      # logger.info "send ws hello: #{json}"
       connection.sendUTF json, Subscribe()
 
     headers =
