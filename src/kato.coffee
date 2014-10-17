@@ -16,12 +16,13 @@ winston = new Winston.Logger
       filename: process.env.HUBOT_KATO_LOG_FILE || 'kato-hubot.log',
       timestamp: true,
       json: false,
-      level: process.env.HUBOT_KATO_LOG_LEVEL || 'info'
+      level: process.env.HUBOT_KATO_LOG_LEVEL || 'error'
     }
     new Winston.transports.Console {
-      level: process.env.HUBOT_KATO_LOG_LEVEL || 'info'
+      level: process.env.HUBOT_KATO_LOG_LEVEL || 'error'
     }
   ]
+
 
 # simple Winston logger wrapper
 logger =
@@ -74,8 +75,6 @@ class Kato extends Adapter
     client = new KatoClient(options, @robot)
 
     client.on "TextMessage", (user, message) ->
-      # logger.info \
-      #  "TextMessage Received: #{message} \n User: #{Util.inspect user}"
       # In old code here was this check: unless user.id is client.account_id
       # to be sure tha message is send not by hubot user
       self.receive new TextMessage user, message
@@ -194,9 +193,9 @@ class KatoClient extends EventEmitter
                 device_type: "hubot"  # TODO: not sure about it
               })
             connection.sendUTF json # notifying server for hubot user presence
-            # logger.info "send presence: #{json}"
+            logger.debug "send presence: #{json}"
           else
-            # logger.info "unused message received: #{Util.inspect(data)}"
+            logger.debug "unused message received: #{Util.inspect(data)}"
 
       # Send message for subscribing to all avalable rooms
       Subscribe = () ->
@@ -213,14 +212,13 @@ class KatoClient extends EventEmitter
             group_id: o.org_id
             params: params
           )
-          # logger.info "subscribe json send:\n#{json}"
           connection.sendUTF json
 
       # Subscribe to organizations messages (aka hello)
       json = JSON.stringify(
         type: "sync"
         params: { account: {} })
-      # logger.info "send ws hello: #{json}"
+      logger.debug "send ws hello: #{json}"
       connection.sendUTF json, Subscribe()
 
     headers =
