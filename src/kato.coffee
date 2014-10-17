@@ -2,9 +2,12 @@ HTTP            = require('http')
 HTTPS           = require('https')
 EventEmitter    = require('events').EventEmitter
 WebSocketClient = require('websocket').client
-
+# for inspectiong and loggingig
 Util            = require("util")
 Winston         = require('winston')
+# for scripts loading
+Fs              = require('fs')
+Path            = require('path')
 
 # logger options
 winston = new Winston.Logger
@@ -36,6 +39,16 @@ try
 class Kato extends Adapter
   constructor: (robot) ->
     super robot
+    # scripts files loader
+    path = Path.resolve __dirname, '../scripts'
+    Fs.exists path, (exists) ->
+      logger.inspect("path ", path)
+      logger.inspect("exist ", exists)
+      if exists
+        for file in Fs.readdirSync(path)
+          robot.loadFile path, file
+          robot.parseHelp Path.join(path, file)
+      else logger.info("Script folder #{path} doesn't exist!")
 
   send: (envelope, strings...) ->
     @client.send(envelope.room, str) for str in strings
