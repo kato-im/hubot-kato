@@ -39,7 +39,7 @@ Then invite it to your organization, creating a new account. Confirm the email a
 Next, you will need to set some environment variables:
 
     $ export HUBOT_KATO_LOGIN="katobot@mycompany.com"
-    $ export HUBOT_KATO_PASSWORD="1"
+    $ export HUBOT_KATO_PASSWORD="5prz8OKty6"
 
 ## Usage
 
