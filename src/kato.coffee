@@ -55,7 +55,7 @@ class Kato extends Adapter
     @client.send(envelope.room, str) for str in strings
 
   reply: (envelope, strings...) ->
-    strings = strings.map (s) -> "#{envelope.user.name}: #{s}"
+    strings = strings.map (s) -> "@#{envelope.user.name} #{s}"
     @send envelope.user, strings...
 
   run: ->
