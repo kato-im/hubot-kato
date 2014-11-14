@@ -22,8 +22,7 @@ You will be asked which adapter to use, type `kato`
 
 ## Configuration
 
-First, create a new Kato account for your bot. It’s best to create a new email, eg. `kato-bot@mycompany.com`.
-Then invite it to your organization, creating a new account. Confirm the email and set a name for your bot in its new account (that name shows up when it posts a message).
+First, create a new Kato account for your bot. It’s best to create a new email address, eg. `kato-bot@mycompany.com` and invite this address to your Kato team. Verify the email and set a name for your bot in its new account (that name shows up when it posts a message).
 
 Next, you will need to set some environment variables:
 
