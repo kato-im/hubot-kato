@@ -2,7 +2,7 @@
 
 ## Description
 
-The Kato Hubot adapter allows you to use [Hubot](https://hubot.github.com) in your Kato organization.
+The Kato Hubot adapter allows you to use [Hubot](https://hubot.github.com) in your Kato team.
 
 ## Installation
 
