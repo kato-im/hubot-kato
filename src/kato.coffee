@@ -264,14 +264,17 @@ class KatoClient extends EventEmitter
       "port"   : port
       "path"   : path
       "method" : method
-      "headers": headers
+      "headers": {}
 
     if method is "POST" || method is "PUT"
       if typeof(body) isnt "string"
         body = JSON.stringify body
 
       body = new Buffer(body)
-      options.headers["Content-Length"] = body.length
+      headers["Content-Length"] = body.length
+
+    for key, val of headers when val
+      options.headers[key] = val
 
     request = module.request options, (response) ->
       data = ""
